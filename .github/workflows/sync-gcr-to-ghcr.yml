@@ -1,0 +1,21 @@
+name: Sync gcr.io to ghcr.io
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, tag, and push image
+        run: |
+          docker pull gcr.io/distroless/base-debian12
+          docker tag gcr.io/distroless/base-debian12 ghcr.io/deputyai/deputy
+          docker push ghcr.io/deputyai/deputy
